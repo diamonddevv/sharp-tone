@@ -74,8 +74,8 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
 
 
     public ResonantDaggerItem() {
-        super(new ResonantToolMaterial(), 9, 4,
-                new FabricItemSettings().maxCount(1).group(ItemGroup.COMBAT).maxDamage(1800));
+        super(new ResonantToolMaterial(), 1, 4,
+                new FabricItemSettings().maxCount(1).group(ItemGroup.COMBAT).maxDamage(1500));
     }
 
     // NBT Stuff
@@ -88,6 +88,7 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
         nbt.putFloat(CHARGE_HELPER_KEY, f);
         nbt.putInt(CHARGE_TRUE_KEY, getLastMilestone(f));
         nbt.putBoolean(FULL_CHARGE_KEY, f >= 20.0f);
+        stack.setNbt(nbt);
     } // todo: visual indicator of charge that isnt enchantment glint, maybe texture
 
     @Override
@@ -96,7 +97,7 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
             int charge = stack.getOrCreateNbt().getInt(CHARGE_TRUE_KEY);
             ResonateCharge resonateCharge = ResonateCharge.getCharge(charge);
 
-            MutableText text = Text.translatable("text.sharptine.charge.prefix");
+            MutableText text = Text.translatable("text.sharptone.charge.prefix");
             text.append(" ").append(Text.translatable(resonateCharge.getTranslationKey()));
 
             tooltip.add(text);
