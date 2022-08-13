@@ -2,10 +2,10 @@
   "item.sharptone.resonant_dagger.release_charge": {
     "subtitle": "subtitle.sharptone.dagger.release",
     "sounds": [
-      "minecraft/sounds/mob/warden/sonic_boom1",
-      "minecraft/sounds/mob/warden/sonic_boom2",
-      "minecraft/sounds/mob/warden/sonic_boom3",
-      "minecraft/sounds/mob/warden/sonic_boom4"
+      "mob/warden/sonic_boom1",
+      "mob/warden/sonic_boom2",
+      "mob/warden/sonic_boom3",
+      "mob/warden/sonic_boom4"
     ]
   }
 }
