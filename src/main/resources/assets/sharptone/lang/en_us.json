@@ -1,0 +1,14 @@
+{
+  "item.sharptone.resonant_dagger": "Resonant Dagger",
+  "item.sharptone.deepslate_rod": "Deepslate Rod",
+
+  "text.sharptine.charge.prefix": "Charge: ",
+
+  "text.sharptone.charge.0": "Silent Echo",
+  "text.sharptone.charge.1": "Echoing Whisper",
+  "text.sharptone.charge.2": "Reverberating Call",
+  "text.sharptone.charge.3": "Vibrating Scream",
+  "text.sharptone.charge.4": "Resonate Voices",
+
+  "subtitle.sharptone.dagger.release": "Resonate Dagger Discharges"
+}
