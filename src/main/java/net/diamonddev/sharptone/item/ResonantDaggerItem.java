@@ -2,23 +2,28 @@ package net.diamonddev.sharptone.item;
 
 import net.diamonddev.sharptone.SharpToneMod;
 import net.diamonddev.sharptone.util.InstrumentHelper;
+import net.diamonddev.sharptone.util.SonicBoomAttack;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
@@ -79,17 +84,33 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
     }
 
     // NBT Stuff
-    private void updateNbt(ItemStack stack) {
+    public void updateNbt(ItemStack stack, Entity user) {
         NbtCompound nbt = stack.getOrCreateNbt();
         float previous = nbt.getFloat(CHARGE_HELPER_KEY);
+        int prevMilestone = nbt.getInt(CHARGE_TRUE_KEY);
         stack.setNbt(null); // clear
 
-        float f = previous + r.nextFloat(0.2f, 1.8f);
+        float f = previous <= 20.0f ? previous + r.nextFloat(0.5f, 3.0f) : previous;
         nbt.putFloat(CHARGE_HELPER_KEY, f);
         nbt.putInt(CHARGE_TRUE_KEY, getLastMilestone(f));
+        if (prevMilestone < getLastMilestone(f)) {
+            double x = user.getX() + r.nextFloat(-1.0f, 1.0f),
+                    y = user.getY() + r.nextFloat(-1.0f, 1.0f),
+                    z = user.getZ() + r.nextFloat(-1.0f, 1.0f);
+            user.world.addParticle(ParticleTypes.SCULK_CHARGE_POP, x, y, z, 0.0, 0.0, 0.0);
+        }
         nbt.putBoolean(FULL_CHARGE_KEY, f >= 20.0f);
         stack.setNbt(nbt);
-    } // todo: visual indicator of charge that isnt enchantment glint, maybe texture
+    }
+
+    public void resetChargeNBT(ItemStack stack) {
+        stack.setNbt(null);
+        NbtCompound nbt = stack.getOrCreateNbt();
+        nbt.putBoolean(FULL_CHARGE_KEY, false);
+        nbt.putFloat(CHARGE_HELPER_KEY, 0.0f);
+        nbt.putInt(CHARGE_TRUE_KEY, 0);
+        stack.setNbt(nbt);
+    }
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
@@ -120,19 +141,35 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
         return r.nextFloat(5.0f, 15.0f);
     }
 
-
     // Usage
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack stack = user.getStackInHand(hand);
-        user.getItemCooldownManager().set(this, 300);
+        user.getItemCooldownManager().set(this, stack.getOrCreateNbt().getBoolean(FULL_CHARGE_KEY) ? 300 : 60);
 
         world.playSound(null, user.getBlockPos(), this.getSoundEvent(), SoundCategory.PLAYERS, this.getVolume(), this.getPitch());
-        this.updateNbt(stack); // todo: no this isnt right
+        if (!world.isClient) {
 
+            SonicBoomAttack.create
+                    (user, Objects.requireNonNull(world.getServer()).getWorld(user.getWorld().getRegistryKey()),
+                            stack.getOrCreateNbt().getInt(CHARGE_TRUE_KEY) * (stack.getOrCreateNbt().getBoolean(FULL_CHARGE_KEY) ? 20 : 10),
+                            stack.getOrCreateNbt().getInt(CHARGE_TRUE_KEY));
+
+        }
+        this.resetChargeNBT(stack);
         return super.use(world, user, hand);
 
+    }
 
-
+    @Override
+    public ItemStack getDefaultStack() {
+        ItemStack stack = new ItemStack(this);
+        stack.setNbt(null);
+        NbtCompound nbt = new NbtCompound();
+        nbt.putBoolean(FULL_CHARGE_KEY, false);
+        nbt.putFloat(CHARGE_HELPER_KEY, 0.0f);
+        nbt.putInt(CHARGE_TRUE_KEY, 0);
+        stack.setNbt(nbt);
+        return stack;
     }
 }

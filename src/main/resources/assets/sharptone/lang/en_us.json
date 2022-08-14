@@ -4,11 +4,15 @@
 
   "text.sharptone.charge.prefix": "Charge:",
 
-  "text.sharptone.charge.0": "Silent Echo",
-  "text.sharptone.charge.1": "Echoing Whisper",
-  "text.sharptone.charge.2": "Reverberating Call",
-  "text.sharptone.charge.3": "Vibrating Scream",
-  "text.sharptone.charge.4": "Resonate Voices",
+  "text.sharptone.charge.0": "§7Silent Echo",
+  "text.sharptone.charge.1": "§8Echoing Whisper",
+  "text.sharptone.charge.2": "§9Reverberating Call",
+  "text.sharptone.charge.3": "§bVibrating Scream",
+  "text.sharptone.charge.4": "§3Resonate Voices",
 
-  "subtitle.sharptone.dagger.release": "Resonate Dagger Discharges"
+  "subtitle.sharptone.dagger.release": "Resonate Dagger Discharges",
+
+  "death.attack.sonic_boom_atk": "%1$s was obliterated by a sonically-charged blast from a Resonant Dagger",
+  "death.attack.sonic_boom_atk.item": "%1$s was obliterated by a sonically-charged blast whilst trying to escape %2$s wielding %3$s",
+  "death.attack.sonic_boom_atk.player": "%1$s was obliterated by a sonically-charged blast whilst trying to escape %2$s"
 }

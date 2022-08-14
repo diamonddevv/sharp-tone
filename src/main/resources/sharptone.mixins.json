@@ -4,6 +4,7 @@
   "package": "net.diamonddev.sharptone.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "LivingEntityMixin"
   ],
   "client": [
   ],
