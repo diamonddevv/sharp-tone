@@ -18,6 +18,8 @@ public class SharpToneMod implements ModInitializer {
 
 	public static final ResonantDaggerItem RESONANT_DAGGER = new ResonantDaggerItem();
 	public static final Item DEEPSLATE_ROD = new Item(new FabricItemSettings().group(ItemGroup.MISC));
+	public static final Item REINFORCED_HANDLE = new Item(new FabricItemSettings().group(ItemGroup.MISC));
+	public static final Item ECHOING_BLADE = new Item(new FabricItemSettings().group(ItemGroup.MISC));
 	public static SoundEvent DISCHARGE;
 	@Override
 	public void onInitialize() {
@@ -26,6 +28,9 @@ public class SharpToneMod implements ModInitializer {
 
 		Registry.register(Registry.ITEM, new Identifier("deepslate_rod"), DEEPSLATE_ROD);
 		Registry.register(Registry.ITEM, new Identifier("resonant_dagger"), RESONANT_DAGGER);
+		Registry.register(Registry.ITEM, new Identifier("reinforced_handle"), REINFORCED_HANDLE);
+		Registry.register(Registry.ITEM, new Identifier("echoing_blade"), ECHOING_BLADE);
+
 		DISCHARGE = createSound("item.sharptone.resonant_dagger.release_charge");
 
 		//

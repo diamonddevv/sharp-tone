@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smithing",
+  "base": {
+    "item": "sharptone:reinforced_handle"
+  },
+  "addition": {
+    "item": "sharptone:echoing_blade"
+  },
+  "result": {
+    "item": "sharptone:resonant_dagger"
+  }
+}

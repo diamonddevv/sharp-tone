@@ -16,7 +16,6 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
@@ -145,18 +144,19 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack stack = user.getStackInHand(hand);
-        user.getItemCooldownManager().set(this, stack.getOrCreateNbt().getBoolean(FULL_CHARGE_KEY) ? 300 : 60);
+        user.getItemCooldownManager().set(this, 60);
 
         world.playSound(null, user.getBlockPos(), this.getSoundEvent(), SoundCategory.PLAYERS, this.getVolume(), this.getPitch());
         if (!world.isClient) {
+            if (ResonateCharge.getCharge(stack.getOrCreateNbt().getInt(CHARGE_TRUE_KEY)) == ResonateCharge.SILENT_ECHO) {
+                SonicBoomAttack.create
+                        (user, Objects.requireNonNull(world.getServer()).getWorld(user.getWorld().getRegistryKey()),
+                                stack.getOrCreateNbt().getInt(CHARGE_TRUE_KEY) * (stack.getOrCreateNbt().getBoolean(FULL_CHARGE_KEY) ? 20 : 10),
+                                stack.getOrCreateNbt().getInt(CHARGE_TRUE_KEY) + 1);
 
-            SonicBoomAttack.create
-                    (user, Objects.requireNonNull(world.getServer()).getWorld(user.getWorld().getRegistryKey()),
-                            stack.getOrCreateNbt().getInt(CHARGE_TRUE_KEY) * (stack.getOrCreateNbt().getBoolean(FULL_CHARGE_KEY) ? 20 : 10),
-                            stack.getOrCreateNbt().getInt(CHARGE_TRUE_KEY));
-
+                this.resetChargeNBT(stack);
+            }
         }
-        this.resetChargeNBT(stack);
         return super.use(world, user, hand);
 
     }
