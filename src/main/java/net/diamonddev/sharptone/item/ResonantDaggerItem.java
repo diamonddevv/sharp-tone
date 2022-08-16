@@ -148,15 +148,19 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
 
         world.playSound(null, user.getBlockPos(), this.getSoundEvent(), SoundCategory.PLAYERS, this.getVolume(), this.getPitch());
         if (!world.isClient) {
-            if (ResonateCharge.getCharge(stack.getOrCreateNbt().getInt(CHARGE_TRUE_KEY)) == ResonateCharge.SILENT_ECHO) {
+            if (ResonateCharge.getCharge(stack.getOrCreateNbt().getInt(CHARGE_TRUE_KEY)) != ResonateCharge.SILENT_ECHO) {
                 SonicBoomAttack.create
-                        (user, Objects.requireNonNull(world.getServer()).getWorld(user.getWorld().getRegistryKey()),
+                        (
+                                user,
+                                user.getCommandSource().getWorld(),
                                 stack.getOrCreateNbt().getInt(CHARGE_TRUE_KEY) * (stack.getOrCreateNbt().getBoolean(FULL_CHARGE_KEY) ? 20 : 10),
-                                stack.getOrCreateNbt().getInt(CHARGE_TRUE_KEY) + 1);
+                                stack.getOrCreateNbt().getInt(CHARGE_TRUE_KEY) + 1
+                        );
 
                 this.resetChargeNBT(stack);
             }
         }
+
         return super.use(world, user, hand);
 
     }

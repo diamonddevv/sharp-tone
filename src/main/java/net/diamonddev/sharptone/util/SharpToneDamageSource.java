@@ -25,6 +25,6 @@ public class SharpToneDamageSource extends EntityDamageSource {
         return (SharpToneDamageSource) super.setUsesMagic();
     }
     public static DamageSource sonicBoomAtk(Entity attacker) {
-        return (new SharpToneDamageSource("sonic_boom_atk", attacker)).setBypassesArmor().setBypassesProtection().setUsesMagic();
+        return (new SharpToneDamageSource("sonic_boom_atk", attacker)).setBypassesProtection().setUsesMagic();
     }
 }
