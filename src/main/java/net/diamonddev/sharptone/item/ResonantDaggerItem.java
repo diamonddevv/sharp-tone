@@ -22,7 +22,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
@@ -86,18 +85,11 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
     public void updateNbt(ItemStack stack, Entity user) {
         NbtCompound nbt = stack.getOrCreateNbt();
         float previous = nbt.getFloat(CHARGE_HELPER_KEY);
-        int prevMilestone = nbt.getInt(CHARGE_TRUE_KEY);
         stack.setNbt(null); // clear
 
         float f = previous <= 20.0f ? previous + r.nextFloat(0.5f, 3.0f) : previous;
         nbt.putFloat(CHARGE_HELPER_KEY, f);
         nbt.putInt(CHARGE_TRUE_KEY, getLastMilestone(f));
-        if (prevMilestone < getLastMilestone(f)) {
-            double x = user.getX() + r.nextFloat(-1.0f, 1.0f),
-                    y = user.getY() + r.nextFloat(-1.0f, 1.0f),
-                    z = user.getZ() + r.nextFloat(-1.0f, 1.0f);
-            user.world.addParticle(ParticleTypes.SCULK_CHARGE_POP, x, y, z, 0.0, 0.0, 0.0);
-        }
         nbt.putBoolean(FULL_CHARGE_KEY, f >= 20.0f);
         stack.setNbt(nbt);
     }

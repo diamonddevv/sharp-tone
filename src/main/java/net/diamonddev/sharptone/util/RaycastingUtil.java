@@ -2,6 +2,7 @@ package net.diamonddev.sharptone.util;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileUtil;
+import net.minecraft.util.Pair;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -21,7 +22,7 @@ public class RaycastingUtil {
         return source.world.raycast(new RaycastContext(origin, target, RaycastContext.ShapeType.OUTLINE, handleFluids ? RaycastContext.FluidHandling.ANY : RaycastContext.FluidHandling.NONE, source));
     }
 
-    public static HitResult performRaycastsInParallel(Entity source, Vec3d origin, Vec3d target, boolean handleFluids) { // thank you once again apoli 👍
+    public static Pair<HitResult, Double> performRaycastsInParallel(Entity source, Vec3d origin, Vec3d target, boolean handleFluids) { // thank you once again apoli 👍
         HitResult result;
 
         // Entity
@@ -51,8 +52,13 @@ public class RaycastingUtil {
             };
         }
 
+        // Get raycast length
+        Vec3d finishpos = result.getPos();
+        double actualRayLength = origin.squaredDistanceTo(finishpos);
+
+
         // return
-        return result;
+        return new Pair<>(result, actualRayLength);
 
     }
 }
