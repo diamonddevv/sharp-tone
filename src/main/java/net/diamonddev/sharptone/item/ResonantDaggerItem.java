@@ -6,12 +6,12 @@ import net.diamonddev.sharptone.util.SonicBoomAttack;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.MutableText;
@@ -78,16 +78,24 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
 
     public ResonantDaggerItem() {
         super(new ResonantToolMaterial(), 1, 4,
-                new FabricItemSettings().maxCount(1).group(ItemGroup.COMBAT).maxDamage(1500));
+                new FabricItemSettings().maxCount(1).group(ItemGroup.COMBAT).maxDamage(900));
     }
 
     // NBT Stuff
-    public void updateNbt(ItemStack stack, Entity user) {
+    public void updateNbt(ItemStack stack, Entity entity, LivingEntity killedEntity) {
         NbtCompound nbt = stack.getOrCreateNbt();
         float previous = nbt.getFloat(CHARGE_HELPER_KEY);
+        int previousMilestone = nbt.getInt(CHARGE_TRUE_KEY);
+
         stack.setNbt(null); // clear
 
-        float f = previous <= 20.0f ? previous + r.nextFloat(0.5f, 3.0f) : previous;
+        int charge = killedEntity.getXpToDrop();
+        float f = previous <= 20.0f ? previous + (charge * r.nextFloat(0.1f, 0.8f)) : 20.0f;
+
+        if (previousMilestone < getLastMilestone(f)) {
+            entity.getWorld().playSound(null, entity.getBlockPos(), SharpToneMod.CHARGE, SoundCategory.PLAYERS, this.getVolume(), this.getPitch());
+        }
+
         nbt.putFloat(CHARGE_HELPER_KEY, f);
         nbt.putInt(CHARGE_TRUE_KEY, getLastMilestone(f));
         nbt.putBoolean(FULL_CHARGE_KEY, f >= 20.0f);
@@ -136,21 +144,19 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack stack = user.getStackInHand(hand);
-        user.getItemCooldownManager().set(this, 60);
+        user.getItemCooldownManager().set(this, 160);
 
         world.playSound(null, user.getBlockPos(), this.getSoundEvent(), SoundCategory.PLAYERS, this.getVolume(), this.getPitch());
         if (!world.isClient) {
-            if (ResonateCharge.getCharge(stack.getOrCreateNbt().getInt(CHARGE_TRUE_KEY)) != ResonateCharge.SILENT_ECHO) {
-                SonicBoomAttack.create
-                        (
-                                user,
-                                user.getCommandSource().getWorld(),
-                                stack.getOrCreateNbt().getInt(CHARGE_TRUE_KEY) * (stack.getOrCreateNbt().getBoolean(FULL_CHARGE_KEY) ? 20 : 10),
-                                stack.getOrCreateNbt().getInt(CHARGE_TRUE_KEY) + 1
-                        );
+            SonicBoomAttack.create
+                    (
+                            user,
+                            user.getCommandSource().getWorld(),
+                            (int) stack.getOrCreateNbt().getFloat(CHARGE_HELPER_KEY) * (stack.getOrCreateNbt().getBoolean(FULL_CHARGE_KEY) ? 18 : 8),
+                            stack.getOrCreateNbt().getInt(CHARGE_TRUE_KEY) + 1
+                    );
 
-                this.resetChargeNBT(stack);
-            }
+            this.resetChargeNBT(stack);
         }
 
         return super.use(world, user, hand);

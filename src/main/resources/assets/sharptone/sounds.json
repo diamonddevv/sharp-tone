@@ -7,5 +7,14 @@
       "mob/warden/sonic_boom3",
       "mob/warden/sonic_boom4"
     ]
+  },
+  "item.sharptone.resonant_dagger.charge": {
+    "subtitle": "subtitle.sharptone.dagger.charge",
+    "sounds": [
+      "mob/warden/sonic_charge1",
+      "mob/warden/sonic_charge2",
+      "mob/warden/sonic_charge3",
+      "mob/warden/sonic_charge4"
+    ]
   }
 }

@@ -21,6 +21,7 @@ public class SharpToneMod implements ModInitializer {
 	public static final Item REINFORCED_HANDLE = new Item(new FabricItemSettings().group(ItemGroup.MISC));
 	public static final Item ECHOING_BLADE = new Item(new FabricItemSettings().group(ItemGroup.MISC));
 	public static SoundEvent DISCHARGE;
+	public static SoundEvent CHARGE;
 	@Override
 	public void onInitialize() {
 		long s = System.currentTimeMillis();
@@ -32,6 +33,7 @@ public class SharpToneMod implements ModInitializer {
 		Registry.register(Registry.ITEM, new Identifier("echoing_blade"), ECHOING_BLADE);
 
 		DISCHARGE = createSound("item.sharptone.resonant_dagger.release_charge");
+		CHARGE = createSound("item.sharptone.resonant_dagger.charge");
 
 		//
 		long time = System.currentTimeMillis() - s;

@@ -13,6 +13,7 @@
   "text.sharptone.charge.4": "§3Resonate Voices",
 
   "subtitle.sharptone.dagger.release": "Resonate Dagger Discharges",
+  "subtitle.sharptone.dagger.charge": "Resonate Dagger charges",
 
   "death.attack.sonic_boom_atk": "%1$s was obliterated by a sonically-charged blast from a Resonant Dagger",
   "death.attack.sonic_boom_atk.item": "%1$s was obliterated by a sonically-charged blast whilst trying to escape %2$s wielding %3$s",

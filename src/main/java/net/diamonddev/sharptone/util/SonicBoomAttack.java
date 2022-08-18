@@ -10,25 +10,21 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.explosion.Explosion;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class SonicBoomAttack {
-
-    private static final Logger log = LogManager.getLogger("Sharp Tone: Raycasting");
-
     public static void create(Entity creator, ServerWorld serverWorld, int distance, float actionMultiplier) { // todo: fix particles, balancing
 
         Vec3d cameravec = creator.getCameraPosVec(0.0f);
-        Vec3d rotationvec = creator.getRotationVec(0.0f); // Get Rotvec
+        Vec3d rotationvec = creator.getRotationVec(0.0f); // Calculate Vectors
         Vec3d targetvec = cameravec.add(rotationvec.x * distance, rotationvec.y * distance, rotationvec.z * distance);
 
 
-        Pair<HitResult, Double> raycastResultData = RaycastingUtil.performRaycastsInParallel(creator, cameravec, targetvec, true);
+        Pair<HitResult, Double> raycastResultData = RaycastingUtil.performRaycastsInParallel(creator, cameravec, targetvec, true); // Raycasting
+        
         HitResult result = raycastResultData.getLeft();
-        int i = 0;
         long trueLength = Math.round(raycastResultData.getRight());
 
+        int i = 0;
         boolean shouldCancel = false;
 
         while (!shouldCancel) {
@@ -58,7 +54,7 @@ public class SonicBoomAttack {
         if (result instanceof EntityHitResult || result instanceof BlockHitResult) {
 
             if (creator instanceof LivingEntity) {
-                ((LivingEntity) creator).takeKnockback(1.8 * actionMultiplier, result.getPos().x - creator.getX(), result.getPos().z - creator.getZ());
+                ((LivingEntity) creator).takeKnockback(2.0f * actionMultiplier, result.getPos().x - creator.getX(), result.getPos().z - creator.getZ());
             }
 
             serverWorld.createExplosion(
@@ -66,7 +62,7 @@ public class SonicBoomAttack {
                     SharpToneDamageSource.sonicBoomAtk(creator),
                     null,
                     result.getPos().x, result.getPos().y, result.getPos().z,
-                    2.0f * actionMultiplier, false, Explosion.DestructionType.NONE);
+                    1.8f * actionMultiplier, false, Explosion.DestructionType.NONE);
 
         }
     }

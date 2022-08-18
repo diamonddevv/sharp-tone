@@ -8,12 +8,12 @@ import net.minecraft.recipe.Ingredient;
 public class ResonantToolMaterial implements ToolMaterial {
     @Override
     public int getDurability() {
-        return 1500;
+        return 900;
     }
 
     @Override
     public float getMiningSpeedMultiplier() {
-        return 2;
+        return 1;
     }
 
     @Override

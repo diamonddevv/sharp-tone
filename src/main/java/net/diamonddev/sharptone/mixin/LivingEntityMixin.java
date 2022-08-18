@@ -1,7 +1,6 @@
 package net.diamonddev.sharptone.mixin;
 
 import net.diamonddev.sharptone.item.ResonantDaggerItem;
-import net.diamonddev.sharptone.util.SharpToneDamageSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -24,14 +23,12 @@ public abstract class LivingEntityMixin extends Entity {
         super(type, world);
     }
 
-
-
     @Inject(method = "onKilledBy",at =  @At("HEAD"))
     private void sharptone$increaseResonance(LivingEntity adversary, CallbackInfo ci) {
         if (adversary != null) {
             ItemStack stack = adversary.getStackInHand(Hand.MAIN_HAND);
             if (stack.getItem() instanceof ResonantDaggerItem resonantDaggerItem) {
-                resonantDaggerItem.updateNbt(stack, adversary);
+                resonantDaggerItem.updateNbt(stack, adversary, (LivingEntity) (Object) this);
             }
         }
     }
