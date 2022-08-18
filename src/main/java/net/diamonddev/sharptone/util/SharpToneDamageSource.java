@@ -11,12 +11,12 @@ public class SharpToneDamageSource extends EntityDamageSource {
     }
 
     @Override
-    protected SharpToneDamageSource setBypassesArmor() {
+    public SharpToneDamageSource setBypassesArmor() {
         return (SharpToneDamageSource) super.setBypassesArmor();
     }
 
     @Override
-    protected SharpToneDamageSource setBypassesProtection() {
+    public SharpToneDamageSource setBypassesProtection() {
         return (SharpToneDamageSource) super.setBypassesProtection();
     }
 

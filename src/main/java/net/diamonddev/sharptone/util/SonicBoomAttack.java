@@ -1,5 +1,6 @@
 package net.diamonddev.sharptone.util;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.particle.ParticleTypes;
@@ -14,13 +15,14 @@ import net.minecraft.world.explosion.Explosion;
 public class SonicBoomAttack {
     public static void create(Entity creator, ServerWorld serverWorld, int distance, float actionMultiplier) { // todo: fix particles, balancing
 
-        Vec3d cameravec = creator.getCameraPosVec(0.0f);
-        Vec3d rotationvec = creator.getRotationVec(0.0f); // Calculate Vectors
+
+        Vec3d cameravec = creator.getCameraPosVec(1f);
+        Vec3d rotationvec = creator.getRotationVec(1f); // Calculate Vectors
         Vec3d targetvec = cameravec.add(rotationvec.x * distance, rotationvec.y * distance, rotationvec.z * distance);
 
 
         Pair<HitResult, Double> raycastResultData = RaycastingUtil.performRaycastsInParallel(creator, cameravec, targetvec, true); // Raycasting
-        
+
         HitResult result = raycastResultData.getLeft();
         long trueLength = Math.round(raycastResultData.getRight());
 
@@ -34,7 +36,7 @@ public class SonicBoomAttack {
                 shouldCancel = true;
             }
 
-            Vec3d vector = cameravec.add(Math.round(rotationvec.x * i), Math.round(rotationvec.x * i), Math.round(rotationvec.x * i));
+            Vec3d vector = cameravec.add(rotationvec.x * i, rotationvec.y * i, rotationvec.z * i);
 
             serverWorld.spawnParticles(
                     ParticleTypes.SONIC_BOOM,

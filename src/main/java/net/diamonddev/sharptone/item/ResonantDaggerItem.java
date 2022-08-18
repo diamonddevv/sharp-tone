@@ -103,8 +103,10 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
     }
 
     public void resetChargeNBT(ItemStack stack) {
+        int oldDamage = stack.getDamage();
         stack.setNbt(null);
         NbtCompound nbt = stack.getOrCreateNbt();
+        stack.setDamage(oldDamage);
         nbt.putBoolean(FULL_CHARGE_KEY, false);
         nbt.putFloat(CHARGE_HELPER_KEY, 0.0f);
         nbt.putInt(CHARGE_TRUE_KEY, 0);
@@ -145,7 +147,7 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack stack = user.getStackInHand(hand);
         user.getItemCooldownManager().set(this, 160);
-
+        stack.damage(10, net.minecraft.util.math.random.Random.create(), null);
         world.playSound(null, user.getBlockPos(), this.getSoundEvent(), SoundCategory.PLAYERS, this.getVolume(), this.getPitch());
         if (!world.isClient) {
             SonicBoomAttack.create
