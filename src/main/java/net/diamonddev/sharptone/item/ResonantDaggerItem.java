@@ -5,6 +5,8 @@ import net.diamonddev.sharptone.util.InstrumentHelper;
 import net.diamonddev.sharptone.util.SonicBoomAttack;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,6 +14,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.MutableText;
@@ -22,6 +25,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
@@ -103,10 +107,7 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
     }
 
     public void resetChargeNBT(ItemStack stack) {
-        int oldDamage = stack.getDamage();
-        stack.setNbt(null);
         NbtCompound nbt = stack.getOrCreateNbt();
-        stack.setDamage(oldDamage);
         nbt.putBoolean(FULL_CHARGE_KEY, false);
         nbt.putFloat(CHARGE_HELPER_KEY, 0.0f);
         nbt.putInt(CHARGE_TRUE_KEY, 0);
