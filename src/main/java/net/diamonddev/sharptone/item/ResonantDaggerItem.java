@@ -1,12 +1,13 @@
 package net.diamonddev.sharptone.item;
 
 import net.diamonddev.sharptone.SharpToneMod;
+import net.diamonddev.sharptone.util.EnchantmentUtil;
 import net.diamonddev.sharptone.util.InstrumentHelper;
 import net.diamonddev.sharptone.util.SonicBoomAttack;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,18 +15,17 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
@@ -93,7 +93,7 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
 
         stack.setNbt(null); // clear
 
-        int charge = killedEntity.getXpToDrop();
+        int charge = killedEntity.getXpToDrop() * (EnchantmentUtil.getYieldingLevel(stack) + 1); // Add Yielding Bonus
         float f = previous <= 20.0f ? previous + (charge * r.nextFloat(0.1f, 0.8f)) : 20.0f;
 
         if (previousMilestone < getLastMilestone(f)) {
@@ -104,6 +104,29 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
         nbt.putInt(CHARGE_TRUE_KEY, getLastMilestone(f));
         nbt.putBoolean(FULL_CHARGE_KEY, f >= 20.0f);
         stack.setNbt(nbt);
+    }
+
+    public void fixNBT(ItemStack stack) {
+        float helperCharge = stack.getOrCreateNbt().getFloat(CHARGE_HELPER_KEY);
+        int trueCharge;
+        boolean fullCharge;
+
+        // Assume helper charge is correct
+
+        // Fix True-Charge
+        trueCharge = (int) Math.floor(helperCharge / 5);
+
+        // Fix Full-Charge
+        fullCharge = trueCharge == 4;
+
+        // Apply
+        stack.getOrCreateNbt().putFloat(CHARGE_HELPER_KEY, helperCharge);
+        stack.getOrCreateNbt().putInt(CHARGE_TRUE_KEY, trueCharge);
+        stack.getOrCreateNbt().putBoolean(FULL_CHARGE_KEY, fullCharge);
+    }
+
+    public void setHelperValue(ItemStack stack, float helper) {
+        stack.getOrCreateNbt().putFloat(CHARGE_HELPER_KEY, helper);
     }
 
     public void resetChargeNBT(ItemStack stack) {
@@ -156,7 +179,7 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
                             user,
                             user.getCommandSource().getWorld(),
                             (int) stack.getOrCreateNbt().getFloat(CHARGE_HELPER_KEY) * (stack.getOrCreateNbt().getBoolean(FULL_CHARGE_KEY) ? 18 : 8),
-                            stack.getOrCreateNbt().getInt(CHARGE_TRUE_KEY) + 1
+                            (stack.getOrCreateNbt().getInt(CHARGE_TRUE_KEY) + 1) * (EnchantmentUtil.getShriekingLevel(stack) * 2)
                     );
 
             this.resetChargeNBT(stack);
@@ -164,6 +187,20 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
 
         return super.use(world, user, hand);
 
+    }
+
+
+    @Override
+    public void appendStacks(ItemGroup group, DefaultedList<ItemStack> stacks) {
+        if (this.isIn(group)) {
+            for (ResonateCharge chargeLevel : ResonateCharge.values()) {
+                int charge = chargeLevel.getLevel();
+                ItemStack stack = new ItemStack(SharpToneMod.RESONANT_DAGGER);
+                setHelperValue(stack, charge * 5);
+                fixNBT(stack);
+                stacks.add(stack);
+            }
+        }
     }
 
     @Override

@@ -15,6 +15,9 @@
   "subtitle.sharptone.dagger.release": "Resonant Dagger Discharges",
   "subtitle.sharptone.dagger.charge": "Resonant Dagger charges",
 
+  "enchantment.sharptone.yielding": "Yielding",
+  "enchantment.sharptone.shrieking": "Shrieking",
+
   "death.attack.sonic_boom_atk": "%1$s was obliterated by a sonically-charged blast from a Resonant Dagger",
   "death.attack.sonic_boom_atk.item": "%1$s was obliterated by a sonically-charged blast whilst trying to escape %2$s wielding %3$s",
   "death.attack.sonic_boom_atk.player": "%1$s was obliterated by a sonically-charged blast whilst trying to escape %2$s"

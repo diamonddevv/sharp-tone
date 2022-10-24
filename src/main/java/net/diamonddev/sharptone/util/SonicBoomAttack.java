@@ -1,6 +1,5 @@
 package net.diamonddev.sharptone.util;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.particle.ParticleTypes;
@@ -13,8 +12,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.explosion.Explosion;
 
 public class SonicBoomAttack {
-    public static void create(Entity creator, ServerWorld serverWorld, int distance, float actionMultiplier) { // todo: fix particles, balancing
+    public static void create(Entity creator, ServerWorld serverWorld, int distance, float actionMultiplier) {
 
+        distance = (int) (distance * (actionMultiplier / 2));
 
         Vec3d cameravec = creator.getCameraPosVec(1f);
         Vec3d rotationvec = creator.getRotationVec(1f); // Calculate Vectors
@@ -56,7 +56,7 @@ public class SonicBoomAttack {
         if (result instanceof EntityHitResult || result instanceof BlockHitResult) {
 
             if (creator instanceof LivingEntity) {
-                ((LivingEntity) creator).takeKnockback(2.0f * actionMultiplier, result.getPos().x - creator.getX(), result.getPos().z - creator.getZ());
+                ((LivingEntity) creator).takeKnockback(3.0f * actionMultiplier, result.getPos().x - creator.getX(), result.getPos().z - creator.getZ());
             }
 
             serverWorld.createExplosion(
