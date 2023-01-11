@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "sharptone:echoing_blade"
+    "layer0": "sharptone:item/echoing_blade"
   }
 }

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "sharptone:deepslate_rod"
+    "layer0": "sharptone:item/deepslate_rod"
   }
 }

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "sharptone:resonant_dagger"
+    "layer0": "sharptone:item/resonant_dagger"
   }
 }

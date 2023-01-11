@@ -9,7 +9,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.explosion.Explosion;
+import net.minecraft.world.World;
 
 public class SonicBoomAttack {
     public static void create(Entity creator, ServerWorld serverWorld, int distance, float actionMultiplier) {
@@ -56,7 +56,7 @@ public class SonicBoomAttack {
         if (result instanceof EntityHitResult || result instanceof BlockHitResult) {
 
             if (creator instanceof LivingEntity) {
-                ((LivingEntity) creator).takeKnockback(3.0f * actionMultiplier, result.getPos().x - creator.getX(), result.getPos().z - creator.getZ());
+                ((LivingEntity) creator).takeKnockback(3.0f * actionMultiplier, result.getPos().x, result.getPos().z);
             }
 
             serverWorld.createExplosion(
@@ -64,7 +64,9 @@ public class SonicBoomAttack {
                     SharpToneDamageSource.sonicBoomAtk(creator),
                     null,
                     result.getPos().x, result.getPos().y, result.getPos().z,
-                    1.8f * actionMultiplier, false, Explosion.DestructionType.NONE);
+                    1.8f * actionMultiplier,
+                    false, World.ExplosionSourceType.NONE
+            );
 
         }
     }

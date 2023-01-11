@@ -1,0 +1,5 @@
+accessWidener	v1	named
+
+
+# Enchantment Targets
+extendable class   net/minecraft/enchantment/EnchantmentTarget

@@ -5,13 +5,12 @@ import net.diamonddev.sharptone.util.EnchantmentUtil;
 import net.diamonddev.sharptone.util.InstrumentHelper;
 import net.diamonddev.sharptone.util.SonicBoomAttack;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemGroup;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.nbt.NbtCompound;
@@ -21,19 +20,20 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
 public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
 
     private final Random r = new Random();
-    private final String CHARGE_HELPER_KEY = "sharptone.charge_helper";
-    private final String CHARGE_TRUE_KEY = "sharptone.charge";
-    private final String FULL_CHARGE_KEY = "sharptone.full";
+    private static final String CHARGE_HELPER_KEY = "sharptone.charge_helper";
+    private static final String CHARGE_TRUE_KEY = "sharptone.charge";
+    private static final String FULL_CHARGE_KEY = "sharptone.full";
 
     private enum ResonateCharge {
 
@@ -82,7 +82,7 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
 
     public ResonantDaggerItem() {
         super(new ResonantToolMaterial(), 1, 4,
-                new FabricItemSettings().maxCount(1).group(ItemGroup.COMBAT).maxDamage(900));
+                new FabricItemSettings().maxCount(1).maxDamage(900));
     }
 
     // NBT Stuff
@@ -106,7 +106,7 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
         stack.setNbt(nbt);
     }
 
-    public void fixNBT(ItemStack stack) {
+    public static void fixNBT(ItemStack stack) {
         float helperCharge = stack.getOrCreateNbt().getFloat(CHARGE_HELPER_KEY);
         int trueCharge;
         boolean fullCharge;
@@ -125,7 +125,7 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
         stack.getOrCreateNbt().putBoolean(FULL_CHARGE_KEY, fullCharge);
     }
 
-    public void setHelperValue(ItemStack stack, float helper) {
+    public static void setHelperValue(ItemStack stack, float helper) {
         stack.getOrCreateNbt().putFloat(CHARGE_HELPER_KEY, helper);
     }
 
@@ -190,17 +190,17 @@ public class ResonantDaggerItem extends SwordItem implements InstrumentHelper {
     }
 
 
-    @Override
-    public void appendStacks(ItemGroup group, DefaultedList<ItemStack> stacks) {
-        if (this.isIn(group)) {
-            for (ResonateCharge chargeLevel : ResonateCharge.values()) {
-                int charge = chargeLevel.getLevel();
-                ItemStack stack = new ItemStack(SharpToneMod.RESONANT_DAGGER);
-                setHelperValue(stack, charge * 5);
-                fixNBT(stack);
-                stacks.add(stack);
-            }
+    public static void appendStacks(FabricItemGroupEntries group, Item after) {
+        Collection<ItemStack> daggers = new ArrayList<>();
+        for (ResonateCharge chargeLevel : ResonateCharge.values()) {
+            int charge = chargeLevel.getLevel();
+            ItemStack stack = new ItemStack(SharpToneMod.RESONANT_DAGGER);
+            setHelperValue(stack, charge * 5);
+            fixNBT(stack);
+
+            daggers.add(stack);
         }
+        group.addAfter(after, daggers);
     }
 
     @Override
